@@ -24,4 +24,13 @@ Dev proxy: request `/api/*` di-forward ke `VITE_API_URL`.
 
 ## Status
 
-Scaffold + konfigurasi siap. Implementasi UI (Langkah 5) belum dikerjakan.
+UI lengkap: auth, challenges grid + dialog submit, scoreboard SSE real-time.
+
+## Scripts
+
+| Command | Fungsi |
+|---------|--------|
+| `npm run dev` | Dev server (:5173) |
+| `npm run build` | Production build |
+| `npm run preview` | Preview build |
+| `npm run typecheck` | Cek TypeScript |
