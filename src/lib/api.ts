@@ -1,3 +1,5 @@
+import { getAccessToken } from "./auth";
+
 import type {
   ApiErrorBody,
   Challenge,
@@ -26,9 +28,11 @@ async function parseError(response: Response): Promise<ApiError> {
 
 export async function apiFetch<T>(
   path: string,
-  accessToken: string,
   options: RequestInit = {}
 ): Promise<T> {
+  const BASE_URL = import.meta.env.VITE_API_URL as string;
+  const accessToken = await getAccessToken();
+
   // ✅ Gabungkan BASE_URL + path
   const response = await fetch(`${BASE_URL}${path}`, {
     ...options,
@@ -46,41 +50,30 @@ export async function apiFetch<T>(
   return response.json() as Promise<T>;
 }
 
-export async function fetchProfile(accessToken: string): Promise<Profile> {
-  const data = await apiFetch<{ profile: Profile }>(
-    "/api/auth/me",
-    accessToken
-  );
+export async function fetchProfile(): Promise<Profile> {
+  const data = await apiFetch<{ profile: Profile }>("/api/auth/me");
   return data.profile;
 }
 
-export async function fetchChallenges(
-  accessToken: string
-): Promise<Challenge[]> {
-  const data = await apiFetch<{ challenges: Challenge[] }>(
-    "/api/challenges",
-    accessToken
-  );
+export async function fetchChallenges(): Promise<Challenge[]> {
+  const data = await apiFetch<{ challenges: Challenge[] }>("/api/challenges");
   return data.challenges;
 }
 
 export async function submitFlag(
-  accessToken: string,
   challengeId: string,
   flag: string
 ): Promise<SubmitFlagResponse> {
-  return apiFetch<SubmitFlagResponse>("/api/submissions", accessToken, {
+  return apiFetch<SubmitFlagResponse>("/api/submissions", {
     method: "POST",
     body: JSON.stringify({ challenge_id: challengeId, flag }),
   });
 }
 
 export async function fetchScoreboardSnapshot(): Promise<ScoreboardEntry[]> {
-  // ✅ Pakai BASE_URL juga
+  const BASE_URL = import.meta.env.VITE_API_URL as string;
   const response = await fetch(`${BASE_URL}/api/scoreboard`);
-  if (!response.ok) {
-    throw await parseError(response);
-  }
+  if (!response.ok) throw await parseError(response);
   const data = (await response.json()) as { scoreboard: ScoreboardEntry[] };
   return data.scoreboard;
 }
