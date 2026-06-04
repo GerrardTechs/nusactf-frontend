@@ -7,6 +7,9 @@ import type {
 } from "@/types";
 import { ApiError } from "@/types";
 
+// ✅ Ambil base URL dari env variable
+const BASE_URL = import.meta.env.VITE_API_URL as string;
+
 async function parseError(response: Response): Promise<ApiError> {
   let body: ApiErrorBody = {};
   try {
@@ -26,7 +29,8 @@ export async function apiFetch<T>(
   accessToken: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const response = await fetch(path, {
+  // ✅ Gabungkan BASE_URL + path
+  const response = await fetch(`${BASE_URL}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -72,7 +76,8 @@ export async function submitFlag(
 }
 
 export async function fetchScoreboardSnapshot(): Promise<ScoreboardEntry[]> {
-  const response = await fetch("/api/scoreboard");
+  // ✅ Pakai BASE_URL juga
+  const response = await fetch(`${BASE_URL}/api/scoreboard`);
   if (!response.ok) {
     throw await parseError(response);
   }
@@ -85,17 +90,17 @@ export function getChallengeLinks(slug: string): { label: string; href: string }
   switch (slug) {
     case "warung-login":
       return [
-        { label: "Buka sandbox SQLi", href: "/api/challenges/warung-login" },
+        { label: "Buka sandbox SQLi", href: `${BASE_URL}/api/challenges/warung-login` },
       ];
     case "pesan-rahasia":
       return [
-        { label: "Lihat pesan terenkripsi", href: "/api/challenges/pesan-rahasia" },
+        { label: "Lihat pesan terenkripsi", href: `${BASE_URL}/api/challenges/pesan-rahasia` },
       ];
     case "foto-kenangan":
       return [
         {
           label: "Unduh foto (stego)",
-          href: "/api/challenges/foto-kenangan/image",
+          href: `${BASE_URL}/api/challenges/foto-kenangan/image`,
         },
       ];
     default:
