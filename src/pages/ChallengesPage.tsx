@@ -9,7 +9,7 @@ import type { Challenge } from "@/types";
 import { ApiError } from "@/types";
 
 export function ChallengesPage() {
-  const { accessToken } = useAuth();
+  const { session } = useAuth();
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,11 +17,11 @@ export function ChallengesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const loadChallenges = useCallback(async () => {
-    if (!accessToken) return;
+    if (session) return;
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchChallenges(accessToken);
+      const data = await fetchChallenges();
       setChallenges(data);
     } catch (err) {
       setError(
@@ -30,7 +30,7 @@ export function ChallengesPage() {
     } finally {
       setLoading(false);
     }
-  }, [accessToken]);
+  }, [session]);
 
   useEffect(() => {
     void loadChallenges();

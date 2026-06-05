@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const data = await fetchProfile(session.access_token);
+      const data = await fetchProfile();
       setProfile(data);
     } catch {
       setProfile(null);
