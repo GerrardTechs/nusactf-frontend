@@ -24,8 +24,9 @@ export function useScoreboardStream(): UseScoreboardStreamResult {
   const prevRanksRef = useRef<Map<string, number>>(new Map());
 
   useEffect(() => {
-    const source = new EventSource("/api/scoreboard/stream");
-
+    const BASE_URL = import.meta.env.VITE_API_URL as string;
+    const source = new EventSource(`${BASE_URL}/api/scoreboard/stream`);
+    
     const applyUpdate = (next: ScoreboardEntry[]) => {
       const moved = new Set<number>();
       const prev = prevRanksRef.current;

@@ -17,7 +17,7 @@ export function ChallengesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const loadChallenges = useCallback(async () => {
-    if (session) return;
+    if (!session) return;
     setLoading(true);
     setError(null);
     try {
