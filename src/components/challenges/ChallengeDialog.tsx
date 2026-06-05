@@ -30,7 +30,7 @@ export function ChallengeDialog({
   onOpenChange,
   onSolved,
 }: ChallengeDialogProps) {
-  const { accessToken } = useAuth();
+  const { session } = useAuth();
   const [flag, setFlag] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{
@@ -44,13 +44,13 @@ export function ChallengeDialog({
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!accessToken || !flag.trim()) return;
+    if (!session || !flag.trim()) return;
 
     setSubmitting(true);
     setFeedback(null);
 
     try {
-      const result = await submitFlag(accessToken, challenge.id, flag.trim());
+      const result = await submitFlag(challenge.id, flag.trim());
       setFeedback({
         type: result.isCorrect ? "success" : "info",
         message: result.message,
